@@ -1,6 +1,6 @@
-import { validateCpf } from "../../src/refactor/validateCpf";
+import { validateCpf } from "../src/helpers/validateCpf";
 
-describe.skip("validateCpf", () => {
+describe("validateCpf", () => {
   it("should return false for empty string", () => {
     const isValid = validateCpf("");
 
@@ -25,4 +25,8 @@ describe.skip("validateCpf", () => {
     expect(isValid).toBe(true);
   });
 
+  it("CPF is null", () => {
+    const isValid = validateCpf("");
+    expect(isValid).toBe(false);
+  });
 });
