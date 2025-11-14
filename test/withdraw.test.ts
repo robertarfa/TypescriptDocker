@@ -17,7 +17,7 @@ async function createAccount() {
   return response.data.accountId;
 }
 
-describe('deposit', () => {
+describe('withdraw', () => {
   beforeAll(async () => {
     server = start(0);
     await new Promise<void>((resolve) => {
@@ -33,14 +33,14 @@ describe('deposit', () => {
     await closeConnection();
   });
 
-  it("Must thrown an error if deposit doesn't have an accountId", async () => {
+  it("Must thrown an error if withdraw doesn't have an accountId", async () => {
 
-    const deposit = {
+    const withdraw = {
       assetId: "BTC",
       quantity: 100
     }
     try {
-      await axios.post(`${baseUrl}/deposit/`, deposit);
+      await axios.post(`${baseUrl}/withdraw/`, withdraw);
 
     } catch (error: any) {
       if (!error.response) {
@@ -52,30 +52,30 @@ describe('deposit', () => {
     }
   })
 
-  it("Must create a deposit", async () => {
+  it("Must create a withdraw", async () => {
     const accountId = await createAccount();
 
-    const deposit = {
+    const withdraw = {
       accountId,
       assetId: "BTC",
       quantity: 100
     }
 
-    const depositOutput = await axios.post(`${baseUrl}/deposit/`, deposit);
+    const withdrawOutput = await axios.post(`${baseUrl}/withdraw/`, withdraw);
 
-    expect(depositOutput.status).toBe(204);
+    expect(withdrawOutput.status).toBe(204);
   })
 
   it("Asset must be BTC or USD", async () => {
     const accountId = await createAccount();
 
-    const deposit = {
+    const withdraw = {
       accountId,
       assetId: "EEE",
       quantity: 100
     }
     try {
-      await axios.post(`${baseUrl}/deposit/`, deposit);
+      await axios.post(`${baseUrl}/withdraw/`, withdraw);
     } catch (error: any) {
       if (!error.response) {
         console.error('Error without response:', error.message);
@@ -89,13 +89,13 @@ describe('deposit', () => {
   it("Quantity must be bigger than 0", async () => {
     const accountId = await createAccount();
 
-    const deposit = {
+    const withdraw = {
       accountId,
       assetId: "BTC",
       quantity: 0
     }
     try {
-      await axios.post(`${baseUrl}/deposit/`, deposit);
+      await axios.post(`${baseUrl}/withdraw/`, withdraw);
     } catch (error: any) {
       if (!error.response) {
         console.error('Error without response:', error.message);

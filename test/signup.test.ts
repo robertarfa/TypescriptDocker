@@ -1,13 +1,19 @@
 import axios from 'axios';
+import type { AddressInfo } from 'net';
 import { start, closeConnection } from '../src/index';
 
 let server: any;
+let baseUrl!: string;
 
 describe('signup', () => {
   beforeAll(async () => {
-    server = start(3000);
-    // Aguarda o servidor estar pronto
-    await new Promise(resolve => setTimeout(resolve, 500));
+    server = start(0);
+    await new Promise<void>((resolve) => {
+      if (server.listening) return resolve();
+      server.on('listening', resolve);
+    });
+    const address = server.address() as AddressInfo;
+    baseUrl = `http://localhost:${address.port}`;
   });
 
   afterAll(async () => {
@@ -26,13 +32,13 @@ describe('signup', () => {
     };
 
     // when
-    const responseSignup = await axios.post('http://localhost:3000/signup', input);
+    const responseSignup = await axios.post(`${baseUrl}/signup`, input);
 
     const outputSignup = responseSignup.data;
 
     expect(outputSignup.accountId).toBeDefined();
 
-    const newAccount = await axios.get(`http://localhost:3000/accounts/${outputSignup.accountId}`);
+    const newAccount = await axios.get(`${baseUrl}/accounts/${outputSignup.accountId}`);
 
     expect(newAccount.data.account).toBeDefined();
     expect(newAccount.data.account.name).toBe(input.name);
@@ -51,7 +57,7 @@ describe('signup', () => {
 
     // when
     try {
-      await axios.post('http://localhost:3000/signup', input);
+      await axios.post(`${baseUrl}/signup`, input);
       fail('Should have thrown an error');
     } catch (error: any) {
       // then
@@ -75,7 +81,7 @@ describe('signup', () => {
 
     // when
     try {
-      await axios.post('http://localhost:3000/signup', input);
+      await axios.post(`${baseUrl}/signup`, input);
       fail('Should have thrown an error');
     } catch (error: any) {
       // then
@@ -99,11 +105,11 @@ describe('signup', () => {
     };
 
     // when - first account creation
-    await axios.post('http://localhost:3000/signup', input);
+    await axios.post(`${baseUrl}/signup`, input);
 
     // then - try to create another account with same email
     try {
-      await axios.post('http://localhost:3000/signup', input);
+      await axios.post(`${baseUrl}/signup`, input);
       fail('Should have thrown an error');
     } catch (error: any) {
       if (!error.response) {

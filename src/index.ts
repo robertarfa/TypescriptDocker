@@ -105,6 +105,40 @@ app.post('/deposit', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+app.post('/withdraw', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { accountId, assetId, quantity } = req.body;
+
+    if (!accountId) {
+      res.status(400).json({ error: 'accountId é obrigatório' });
+      return;
+    }
+
+    if (assetId !== 'BTC' && assetId !== 'USD') {
+      res.status(400).json({ error: 'assetId deve ser BTC ou USD' });
+      return;
+    }
+
+    if (quantity <= 0) {
+      res.status(400).json({ error: 'quantidade precisa ser maior que zero' });
+      return;
+    }
+
+    const withdrawId = crypto.randomUUID();
+    await getConnection().query(
+      "insert into public.withdraw (withdraw_id, account_id, asset_id, quantity) values ($1, $2, $3, $4)",
+      [withdrawId, accountId, assetId, quantity]
+    );
+
+    res.status(204).send();
+    return;
+  } catch (error: any) {
+    console.error('Error in /withdraw:', error);
+    res.status(500).json({ error: error.message || 'Erro interno do servidor' });
+    return;
+  }
+});
+
 export default app;
 
 
