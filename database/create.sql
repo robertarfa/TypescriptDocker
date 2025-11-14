@@ -9,3 +9,17 @@ create table public.account (
     document text,
     password text
 );
+
+create table public.deposit (
+    deposit_id uuid primary key,
+    account_id uuid references public.account(account_id),
+    asset_id text,
+    quantity numeric
+);
+
+create table public.withdraw (
+    withdraw_id uuid primary key,
+    account_id uuid references public.account(account_id),
+    asset_Id text,
+    quantity numeric
+);

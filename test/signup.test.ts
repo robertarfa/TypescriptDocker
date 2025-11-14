@@ -4,8 +4,10 @@ import { start, closeConnection } from '../src/index';
 let server: any;
 
 describe('signup', () => {
-  beforeAll(() => {
+  beforeAll(async () => {
     server = start(3000);
+    // Aguarda o servidor estar pronto
+    await new Promise(resolve => setTimeout(resolve, 500));
   });
 
   afterAll(async () => {
@@ -15,7 +17,7 @@ describe('signup', () => {
 
   it('should create an account', async () => {
     // given
-    const randomEmail = Math.random().toString(36).substring(7) + '@email.com';
+    const randomEmail = `user_${Date.now()}_${Math.floor(Math.random() * 10000)}@email.com`;
     const input = {
       name: 'John Doe',
       email: randomEmail,
@@ -43,7 +45,7 @@ describe('signup', () => {
     const input = {
       name: 'John',
       email: 'email@email.com.br',
-      document: '55139563061',
+      document: '12345678909',
       password: '123',
     };
 
@@ -53,6 +55,10 @@ describe('signup', () => {
       fail('Should have thrown an error');
     } catch (error: any) {
       // then
+      if (!error.response) {
+        console.error('Error without response:', error.message);
+        throw error;
+      }
       expect(error.response.status).toBe(400);
       expect(error.response.data.error).toBe('O nome deve ser composto por nome e sobrenome');
     }
@@ -63,7 +69,7 @@ describe('signup', () => {
     const input = {
       name: 'John Dee',
       email: 'email',
-      document: '55139563061',
+      document: '98765432100',
       password: '123',
     };
 
@@ -73,6 +79,10 @@ describe('signup', () => {
       fail('Should have thrown an error');
     } catch (error: any) {
       // then
+      if (!error.response) {
+        console.error('Error without response:', error.message);
+        throw error;
+      }
       expect(error.response.status).toBe(400);
       expect(error.response.data.error).toBe('Email inválido');
     }
@@ -80,11 +90,11 @@ describe('signup', () => {
 
   it('Email can not be duplicated', async () => {
     // given
-    const randomEmail = Math.random().toString(36).substring(7) + '@email.com';
+    const randomEmail = `user_${Date.now()}_${Math.floor(Math.random() * 10000)}@email.com`;
     const input = {
       name: 'John Dee',
       email: randomEmail,
-      document: '55139563061',
+      document: '86485263292',
       password: 'SenhaForte123',
     };
 
@@ -96,6 +106,10 @@ describe('signup', () => {
       await axios.post('http://localhost:3000/signup', input);
       fail('Should have thrown an error');
     } catch (error: any) {
+      if (!error.response) {
+        console.error('Error without response:', error.message);
+        throw error;
+      }
       expect(error.response.status).toBe(400);
       expect(error.response.data.error).toBe('Email já cadastrado');
     }
