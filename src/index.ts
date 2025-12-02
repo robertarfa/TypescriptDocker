@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import cors from "cors";
 import pgp from "pg-promise";
 import crypto from 'crypto';
 import { validateName, validateEmail, validatePassword } from '../src/helpers/validator';
@@ -6,6 +7,7 @@ import { validateCpf } from './helpers/validateCpf';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const pgpClient = pgp();
 let connection: any = null;
@@ -15,24 +17,6 @@ function getConnection() {
     connection = pgpClient("postgres://postgres:123456@db:5432/app");
   }
   return connection;
-}
-
-export function start(port = 3000) {
-  return app.listen(port, () => {
-    // eslint-disable-next-line no-console
-    // console.log(`Server running at http://localhost:${port}`);
-  });
-}
-
-export async function closeConnection() {
-  if (!connection) return;
-  const current = connection;
-  connection = null;
-  await current.$pool.end();
-}
-// Se o arquivo for executado diretamente, inicia o servidor
-if (require.main === module) {
-  start();
 }
 
 async function existingEmail(email: string) {
@@ -139,7 +123,7 @@ app.post('/withdraw', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-export default app;
+app.listen(3000);
 
 
 
