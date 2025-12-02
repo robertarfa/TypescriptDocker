@@ -9,28 +9,11 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "jest",
-    "dev:docker": "nodemon --watch src --exec \"ts-node --transpile-only src/index.ts\"",
+    "dev:docker": "nodemon --watch src --exec \"ts-node --transpile-only backend/src/index.ts\"",
     "docker:build": "docker build -t docker-backend -f docker/Dockerfile .",
     "docker:run": "docker run -it -v $(pwd)/.:/app docker-backend sh",
     "compose:up": "docker compose -f docker/docker-compose.yaml up -d",
     "compose:down": "docker compose -f docker/docker-compose.yaml down -v",
     "compose:exec": "docker compose -f docker/docker-compose.yaml exec -it backend sh"
-  },
-  "dependencies": {
-    "@types/express": "^5.0.5",
-    "@types/jest": "^30.0.0",
-    "axios": "^1.13.1",
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "jest": "^30.2.0",
-    "nodemon": "^3.1.10",
-    "pg-promise": "^12.2.0",
-    "ts-jest": "^29.4.5",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.3"
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.19"
   }
 }

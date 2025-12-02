@@ -55,73 +55,73 @@ app.get('/accounts/:accountId', async (req: Request, res: Response) => {
   });
 });
 
-app.post('/deposit', async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { accountId, assetId, quantity } = req.body;
+// app.post('/deposit', async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const { accountId, assetId, quantity } = req.body;
 
-    if (!accountId) {
-      res.status(400).json({ error: 'accountId é obrigatório' });
-      return;
-    }
+//     if (!accountId) {
+//       res.status(400).json({ error: 'accountId é obrigatório' });
+//       return;
+//     }
 
-    if (assetId !== 'BTC' && assetId !== 'USD') {
-      res.status(400).json({ error: 'assetId deve ser BTC ou USD' });
-      return;
-    }
+//     if (assetId !== 'BTC' && assetId !== 'USD') {
+//       res.status(400).json({ error: 'assetId deve ser BTC ou USD' });
+//       return;
+//     }
 
-    if (quantity <= 0) {
-      res.status(400).json({ error: 'quantidade precisa ser maior que zero' });
-      return;
-    }
+//     if (quantity <= 0) {
+//       res.status(400).json({ error: 'quantidade precisa ser maior que zero' });
+//       return;
+//     }
 
-    const depositId = crypto.randomUUID();
-    await getConnection().query(
-      "insert into public.deposit (deposit_id, account_id, asset_id, quantity) values ($1, $2, $3, $4)",
-      [depositId, accountId, assetId, quantity]
-    );
+//     const depositId = crypto.randomUUID();
+//     await getConnection().query(
+//       "insert into public.deposit (deposit_id, account_id, asset_id, quantity) values ($1, $2, $3, $4)",
+//       [depositId, accountId, assetId, quantity]
+//     );
 
-    res.status(204).send();
-    return;
-  } catch (error: any) {
-    console.error('Error in /deposit:', error);
-    res.status(500).json({ error: error.message || 'Erro interno do servidor' });
-    return;
-  }
-});
+//     res.status(204).send();
+//     return;
+//   } catch (error: any) {
+//     console.error('Error in /deposit:', error);
+//     res.status(500).json({ error: error.message || 'Erro interno do servidor' });
+//     return;
+//   }
+// });
 
-app.post('/withdraw', async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { accountId, assetId, quantity } = req.body;
+// app.post('/withdraw', async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const { accountId, assetId, quantity } = req.body;
 
-    if (!accountId) {
-      res.status(400).json({ error: 'accountId é obrigatório' });
-      return;
-    }
+//     if (!accountId) {
+//       res.status(400).json({ error: 'accountId é obrigatório' });
+//       return;
+//     }
 
-    if (assetId !== 'BTC' && assetId !== 'USD') {
-      res.status(400).json({ error: 'assetId deve ser BTC ou USD' });
-      return;
-    }
+//     if (assetId !== 'BTC' && assetId !== 'USD') {
+//       res.status(400).json({ error: 'assetId deve ser BTC ou USD' });
+//       return;
+//     }
 
-    if (quantity <= 0) {
-      res.status(400).json({ error: 'quantidade precisa ser maior que zero' });
-      return;
-    }
+//     if (quantity <= 0) {
+//       res.status(400).json({ error: 'quantidade precisa ser maior que zero' });
+//       return;
+//     }
 
-    const withdrawId = crypto.randomUUID();
-    await getConnection().query(
-      "insert into public.withdraw (withdraw_id, account_id, asset_id, quantity) values ($1, $2, $3, $4)",
-      [withdrawId, accountId, assetId, quantity]
-    );
+//     const withdrawId = crypto.randomUUID();
+//     await getConnection().query(
+//       "insert into public.withdraw (withdraw_id, account_id, asset_id, quantity) values ($1, $2, $3, $4)",
+//       [withdrawId, accountId, assetId, quantity]
+//     );
 
-    res.status(204).send();
-    return;
-  } catch (error: any) {
-    console.error('Error in /withdraw:', error);
-    res.status(500).json({ error: error.message || 'Erro interno do servidor' });
-    return;
-  }
-});
+//     res.status(204).send();
+//     return;
+//   } catch (error: any) {
+//     console.error('Error in /withdraw:', error);
+//     res.status(500).json({ error: error.message || 'Erro interno do servidor' });
+//     return;
+//   }
+// });
 
 app.listen(3000);
 
