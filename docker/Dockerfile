@@ -5,12 +5,12 @@ FROM node:20-alpine
 # Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copie o package.json (e package-lock.json se existir)
-# Isso aproveita o cache de camadas do Docker
-COPY package.json ./
+# Copie os manifests de dependências (raiz e backend) para aproveitar cache
+COPY package*.json ./
+COPY backend/package*.json ./backend/
 
-# Instale as dependências do projeto
-RUN npm install
+# Instala as dependências direto na pasta backend
+RUN npm install --prefix backend
 
 # O restante do código será montado por um volume no docker-compose
 # Este Dockerfile é otimizado para desenvolvimento

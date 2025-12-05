@@ -10,7 +10,7 @@ create table public.account (
     password text
 );
 
-create table ccca.account_asset (
+create table public.account_asset (
 	account_id uuid,
 	asset_id text,
 	quantity numeric,
