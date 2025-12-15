@@ -1,14 +1,18 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-import { getAccount, signup } from '.';
+import AccountService from './services/AccountService';
+import AccountDAODatabase from './infra/AccountDAODatabase';
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+const accountDAO = new AccountDAODatabase();
+const accountService = new AccountService(accountDAO);
+
 app.post("/signup", async (req: Request, res: Response) => {
   const account = req.body;
   try {
-    const output = await signup(account);
+    const output = await accountService.signup(account);
     res.json(output);
   } catch (error: any) {
     res.status(422).json({ message: error.message })
@@ -18,9 +22,8 @@ app.post("/signup", async (req: Request, res: Response) => {
 
 app.get('/accounts/:accountId', async (req: Request, res: Response) => {
   const accountId = req.params.accountId;
-  console.log("accountId", accountId)
   try {
-    const output = await getAccount(accountId);
+    const output = await accountService.getAccount(accountId);
     res.json(output)
   } catch (error: any) {
     res.status(422).json({ message: error.message })
